@@ -15,20 +15,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private List<Notification> notifications;
 
+    public NotificationAdapter(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, message, date;
 
         MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            message = (TextView) view.findViewById(R.id.message);
-            date = (TextView) view.findViewById(R.id.date);
+            title = view.findViewById(R.id.title);
+            message = view.findViewById(R.id.message);
+            date = view.findViewById(R.id.date);
         }
-    }
-
-
-    public NotificationAdapter(List<Notification> notifications) {
-        this.notifications = notifications;
     }
 
     @Override

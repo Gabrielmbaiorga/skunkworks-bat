@@ -64,6 +64,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity
     private PropertiesSingleton mPropSingleton;
     private DBHandler dbHandler;
     private ArrayList<Group> groupArrayList;
+    private DatabaseReference mRef;
     public static final String ARG_GROUP_ID = "id";
     private final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
 
@@ -92,11 +94,12 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        FirebaseApp.initializeApp(this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         requestStoragePermission();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,18 +114,18 @@ public class MainActivity extends AppCompatActivity
         if (appName == null) {
             appName = ODKFileUtils.getOdkDefaultAppName();
         }
-        this.appName = appName;
+        MainActivity.appName = appName;
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
-        name_tv = (TextView) headerView.findViewById(R.id.name_tv);
+        name_tv = headerView.findViewById(R.id.name_tv);
 
         addMenuItemInNavMenuDrawer();
     }
@@ -136,7 +139,9 @@ public class MainActivity extends AppCompatActivity
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                json = new String(buffer, StandardCharsets.UTF_8);
+            }
             Log.e("JSON", json);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -165,7 +170,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -175,7 +180,7 @@ public class MainActivity extends AppCompatActivity
 
     private void addMenuItemInNavMenuDrawer() {
 
-        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navView = findViewById(R.id.nav_view);
         groupArrayList = dbHandler.getGroups();
         Menu menu = navView.getMenu();
         menu.clear();
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void addGroupsFromFirebase() {
-        DatabaseReference mRef  = FirebaseDatabase.getInstance().getReference().child("clients").child(getActiveUser());
+        mRef = FirebaseDatabase.getInstance().getReference().child("clients").child(getActiveUser());
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -248,7 +253,7 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.container,fragment);
         transaction.commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -256,11 +261,12 @@ public class MainActivity extends AppCompatActivity
 
     public String getActiveUser() {
         try {
-            return getDatabase().getActiveUser(getAppName());
+                return getDatabase().getActiveUser(getAppName());
         } catch (ServicesAvailabilityException e) {
             WebLogger.getLogger(getAppName()).printStackTrace(e);
             return CommonToolProperties.ANONYMOUS_USER;
         }
+
     }
 
 
@@ -269,7 +275,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public String getAppName() {
-        return this.appName;
+        return appName;
     }
 
 

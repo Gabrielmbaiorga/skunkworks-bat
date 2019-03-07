@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "218572703069",
-    "firebase_url": "https://notification-c98b1.firebaseio.com",
-    "project_id": "notification-c98b1",
-    "storage_bucket": "notification-c98b1.appspot.com"
+    "project_number": "453338405909",
+    "firebase_url": "https://odknotification.firebaseio.com",
+    "project_id": "odknotification",
+    "storage_bucket": "odknotification.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:218572703069:android:f415e73fadc747ce",
+        "mobilesdk_app_id": "1:453338405909:android:f415e73fadc747ce",
         "android_client_info": {
           "package_name": "org.odk.odknotifications"
         }
       },
       "oauth_client": [
         {
-          "client_id": "218572703069-0qf3h4rgln6uem3ao1k3c7eaale8a7g7.apps.googleusercontent.com",
+          "client_id": "453338405909-o7hor2fc2a9eh6dvkb2mlkdsjm7tpakl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCTkMQX682lsfqtaIasPGQL0KDKRBYEbKo"
+          "current_key": "AIzaSyDCIozmmooNb7X_biMyNwbB9MTfVW_iTIs"
         }
       ],
       "services": {
